@@ -1,0 +1,301 @@
+<!-- Manuel NetWatch : fragment chargé par app.js (#/manuel). Une <section id> par chapitre ; le sommaire est construit à partir des <h2>. -->
+
+<section id="demarrer">
+<h2>1. NetWatch en 2 minutes</h2>
+<p>NetWatch surveille les <b>sites consultés</b> par tous les appareils branchés sur le réseau de l'entreprise :
+PC par câble, PC portables, téléphones et tablettes sur le Wi-Fi. Il signale les sites à contenu explicite,
+les jeux d'argent, l'hameçonnage, les logiciels malveillants et les tentatives de contournement, et peut les bloquer.</p>
+<p>Rien n'est installé sur les téléphones. Sur les PC de l'entreprise, un petit agent facultatif ajoute le nom de
+la personne connectée.</p>
+<div class="note"><b>À retenir.</b> NetWatch voit le <b>nom des sites</b> (ex. <span class="mono">www.pornhub.com</span>), l'heure et
+l'appareil. Il ne voit pas le contenu des pages, les recherches, les messages ni les mots de passe, et il ne capture
+pas les écrans.</div>
+<h3>Où le trouver</h3>
+<ul>
+<li>Adresse : <span class="mono">http://192.168.1.11:8795/</span> depuis n'importe quel PC du bureau.</li>
+<li>Mot de passe : celui choisi au premier démarrage. Une session dure 12 heures.</li>
+<li>Le programme tourne sur <b>SRV-APP</b>, tout seul, jour et nuit. Il redémarre de lui-même après une panne ou un
+redémarrage du serveur.</li>
+</ul>
+<h3>Le menu</h3>
+<table>
+<thead><tr><th>Page</th><th>À quoi elle sert</th></tr></thead>
+<tbody>
+<tr><td><b>Tableau de bord</b></td><td>La journée en un coup d'œil : appareils actifs, alertes, blocages.</td></tr>
+<tr><td><b>Appareils</b></td><td>Chaque PC et téléphone vu sur le réseau ; cliquer pour voir ses sites.</td></tr>
+<tr><td><b>Alertes</b></td><td>Toutes les visites signalées ou bloquées, avec filtres.</td></tr>
+<tr><td><b>Journal</b></td><td>Tous les sites consultés, par jour et par appareil ; export Excel.</td></tr>
+<tr><td><b>Listes</b></td><td>Ce qui est signalé ou bloqué, par catégorie ; vos propres règles.</td></tr>
+<tr><td><b>PC (agents)</b></td><td>Les PC de l'entreprise : qui est connecté, filtre bien appliqué.</td></tr>
+<tr><td><b>Réglages</b></td><td>Courriels d'alerte, durée de conservation, mot de passe, état du système.</td></tr>
+<tr><td><b>Manuel</b></td><td>Ce guide. Le bouton <b>? Aide</b> en haut de chaque page ouvre le bon chapitre.</td></tr>
+</tbody></table>
+</section>
+
+<section id="comprendre">
+<h2>2. Comment ça marche</h2>
+<p>Pour ouvrir un site, un appareil doit d'abord demander son adresse sur Internet : c'est une <b>requête DNS</b>.
+Le serveur DHCP de l'entreprise (DC01) dit à chaque appareil de poser ces questions à NetWatch.</p>
+<pre class="code">téléphone ou PC  ──(« où est www.exemple.com ? »)──►  NetWatch (SRV-APP)
+                                                        1. classe le site (listes de 5,4 millions de domaines)
+                                                        2. l'inscrit au journal de cet appareil
+                                                        3. répond, signale ou bloque selon la catégorie
+                                                     └──►  DC01  ──►  Internet</pre>
+<h3>Requête n'est pas visite</h3>
+<p>Une seule page web déclenche souvent des dizaines de requêtes : images, publicités, statistiques, polices de
+caractères. Un compteur de 40 requêtes vers un site ne veut pas dire 40 visites. Et un domaine signalé peut venir
+d'une <b>publicité</b> ou d'un lien ouvert par erreur. Le chapitre <a href="#/manuel/que-faire">Que faire face à une
+alerte</a> explique comment faire la différence.</p>
+<h3>Les quatre actions possibles</h3>
+<table>
+<thead><tr><th>Action</th><th>Ce qui se passe pour la personne</th><th>Ce que vous voyez</th></tr></thead>
+<tbody>
+<tr><td><span class="badge block">Bloqué</span></td><td>Le site ne s'ouvre pas (erreur de connexion dans le navigateur).</td><td>Une ligne dans Alertes.</td></tr>
+<tr><td><span class="badge alert">Alerte</span></td><td>Le site s'ouvre normalement.</td><td>Une ligne dans Alertes, et un courriel si vous l'activez.</td></tr>
+<tr><td><span class="badge log">Journal</span></td><td>Le site s'ouvre normalement.</td><td>Compté dans le Journal, sans alerte.</td></tr>
+<tr><td>Ignorer</td><td>Le site s'ouvre normalement.</td><td>Compté dans le Journal comme un site ordinaire.</td></tr>
+</tbody></table>
+<p>Une alerte est inscrite au plus <b>une fois par minute</b> pour un même appareil et un même site, pour que la liste reste lisible.</p>
+</section>
+
+<section id="tableau-de-bord">
+<h2>3. Tableau de bord</h2>
+<figure><img src="/static/manuel/img/tableau-de-bord.png" alt="Tableau de bord" loading="lazy"><figcaption>Le tableau de bord avec des données d'exemple.</figcaption></figure>
+<ul>
+<li><b>Mise en service</b> : n'apparaît que tant qu'une étape manque. Tout vert, la carte disparaît.</li>
+<li><b>Appareils actifs</b> : vus dans les 10 dernières minutes (réglable), sur le total connu.</li>
+<li><b>Requêtes DNS aujourd'hui</b> : volume du jour pour tout le réseau. Un chiffre normal se situe en dizaines de milliers.</li>
+<li><b>Alertes</b> et <b>accès bloqués</b> aujourd'hui : en orange et rouge quand il y en a.</li>
+<li><b>Dernières alertes</b> : les 10 plus récentes ; cliquer un appareil ouvre sa fiche, <b>Tout voir</b> ouvre la page Alertes.</li>
+<li><b>Appareils signalés</b> et <b>domaines signalés</b> aujourd'hui : qui et quoi, triés par nombre.</li>
+<li><b>14 derniers jours</b> : requêtes, alertes et blocages par jour, pour repérer un pic.</li>
+</ul>
+<p>La page se rafraîchit seule toutes les 30 secondes. En bas à gauche, la pastille <b>DNS actif</b> confirme que
+NetWatch répond ; elle passe au rouge s'il y a un problème.</p>
+</section>
+
+<section id="appareils">
+<h2>4. Appareils</h2>
+<figure><img src="/static/manuel/img/appareils.png" alt="Liste des appareils" loading="lazy"><figcaption>La liste des appareils.</figcaption></figure>
+<p>Tout ce qui demande des adresses à NetWatch apparaît ici, sans rien installer. Les colonnes :</p>
+<table>
+<thead><tr><th>Colonne</th><th>Signification</th></tr></thead>
+<tbody>
+<tr><td>Point vert</td><td>En ligne : activité dans les 10 dernières minutes.</td></tr>
+<tr><td>Appareil</td><td>Le nom que vous avez donné, sinon le nom du PC, sinon son adresse IP. « Session » = la personne connectée (PC avec agent).</td></tr>
+<tr><td>Type</td><td>PC, téléphone/tablette, serveur, équipement (imprimante, scanner), réseau. Deviné automatiquement, corrigeable.</td></tr>
+<tr><td>IP / MAC</td><td>L'adresse sur le réseau et l'identifiant matériel de la carte réseau.</td></tr>
+<tr><td>Fabricant</td><td>Déduit de l'adresse MAC. « Adresse privée (aléatoire) » = presque toujours un téléphone.</td></tr>
+<tr><td>Requêtes auj. / Signalées</td><td>Volume du jour et nombre d'alertes ou blocages du jour (en rouge).</td></tr>
+</tbody></table>
+<p>Filtres en haut : recherche (nom, IP, MAC, propriétaire), type, <b>En ligne seulement</b>, <b>Afficher les ignorés</b>.</p>
+<div class="note">Les téléphones arrivent quand ils se connectent au Wi-Fi. Le premier jour, prenez 5 minutes pour
+<b>nommer chaque appareil</b> et indiquer son <b>propriétaire</b> : toute la suite devient lisible.</div>
+</section>
+
+<section id="fiche-appareil">
+<h2>5. La fiche d'un appareil</h2>
+<figure><img src="/static/manuel/img/fiche-appareil.png" alt="Fiche d'un appareil" loading="lazy"><figcaption>La fiche d'un téléphone, onglet « Domaines signalés ».</figcaption></figure>
+<h3>Identité et fiche</h3>
+<ul>
+<li><b>Nom affiché</b> : par exemple « iPhone de Marc » ou « PC réception ».</li>
+<li><b>Propriétaire / utilisateur</b> : la personne responsable de l'appareil.</li>
+<li><b>Type</b> : laisser « Automatique » ou corriger.</li>
+<li><b>Ignorer</b> : masque l'appareil des listes (imprimantes, caméras). Il reste journalisé.</li>
+<li><b>Oublier</b> : efface l'appareil et tout son historique. Il réapparaît, vierge, à sa prochaine requête.</li>
+</ul>
+<h3>Activité</h3>
+<p>Choisir la période (aujourd'hui, 7, 30 ou 90 jours), puis un onglet :</p>
+<ul>
+<li><b>Domaines signalés</b> : uniquement les sites classés, avec le nombre de requêtes et l'heure de la dernière.</li>
+<li><b>Tous les domaines</b> : les 200 sites les plus demandés par cet appareil.</li>
+<li><b>Événements</b> : chaque alerte ou blocage, à la minute.</li>
+</ul>
+<p>Sur chaque ligne, <b>Autoriser</b> retire un faux positif pour tout le réseau, et <b>Bloquer</b> bloque ce site
+précis pour tous. Les deux couvrent aussi les sous-domaines et se défont dans Listes › Règles manuelles.</p>
+</section>
+
+<section id="alertes">
+<h2>6. Alertes</h2>
+<figure><img src="/static/manuel/img/alertes.png" alt="Page des alertes" loading="lazy"><figcaption>La page Alertes, filtrée sur 7 jours.</figcaption></figure>
+<p>Chaque ligne : l'heure, l'appareil, le domaine, sa catégorie et l'action (<span class="badge alert">Alerte</span> ou <span class="badge block">Bloqué</span>).</p>
+<ul>
+<li>Filtres : appareil, catégorie, alertes ou blocages seulement, période, texte du domaine.</li>
+<li><b>Afficher plus</b> charge les 200 lignes suivantes.</li>
+<li>Les couleurs de catégorie indiquent la gravité : rouge (explicite, malveillant), orange (jeux d'argent, VPN), jaune (suggestif).</li>
+</ul>
+<p>Les lignes « Contournement du filtre » (par exemple <span class="mono">mask.icloud.com</span> ou <span class="mono">dns.google</span>) sont
+normales en petit nombre : ce sont des iPhone et des navigateurs qui vérifient s'ils peuvent passer par un DNS chiffré.
+NetWatch leur répond non, et ils continuent normalement, de façon visible.</p>
+</section>
+
+<section id="journal">
+<h2>7. Journal</h2>
+<figure><img src="/static/manuel/img/journal.png" alt="Journal" loading="lazy"><figcaption>Le journal d'une journée.</figcaption></figure>
+<p>Une ligne par jour, par appareil et par site, avec le nombre de requêtes, combien ont été bloquées et l'heure de la
+dernière. C'est la vue complète, sites ordinaires compris.</p>
+<ul>
+<li>Cocher <b>Classés seulement</b> pour ne garder que les sites dans une catégorie.</li>
+<li>L'écran affiche 500 lignes au plus ; <b>Exporter CSV</b> donne tout ce qui correspond aux filtres, à ouvrir dans Excel.</li>
+<li>Le journal est conservé <b>90 jours</b> (Réglages), puis effacé automatiquement.</li>
+</ul>
+</section>
+
+<section id="listes">
+<h2>8. Listes et règles</h2>
+<figure><img src="/static/manuel/img/listes.png" alt="Listes" loading="lazy"><figcaption>Catégories, sources et règles.</figcaption></figure>
+<h3>Catégories</h3>
+<p>Choisir l'action de chaque catégorie dans la liste déroulante : <b>Ignorer</b>, <b>Journal seulement</b>,
+<b>Alerter</b> ou <b>Bloquer</b>. Le changement s'applique tout de suite à tout le réseau. Réglages de départ :</p>
+<table>
+<thead><tr><th>Catégorie</th><th>Action de départ</th></tr></thead>
+<tbody>
+<tr><td>Contenu explicite, rencontres, jeux d'argent, drogues, haine, piratage, VPN, proxy, mot-clé suspect</td><td>Alerter</td></tr>
+<tr><td>Logiciel malveillant, hameçonnage, minage caché, logiciel espion, outils d'attaque, contournement du filtre</td><td>Bloquer</td></tr>
+<tr><td>Lingerie, éducation sexuelle, sectes, réseaux sociaux, vidéo, jeux</td><td>Journal seulement</td></tr>
+</tbody></table>
+<p>Pour interdire le contenu explicite au lieu de seulement le signaler, mettre « Contenu explicite (adulte) » et
+« Contenu adulte mixte » sur <b>Bloquer</b>.</p>
+<h3>Sources</h3>
+<p>Les listes viennent de l'Université Toulouse Capitole (UT1, la référence des filtres scolaires et d'entreprise)
+et de StevenBlack, plus deux petites listes intégrées. Elles se mettent à jour seules tous les 7 jours ;
+<b>Mettre à jour les listes</b> le fait tout de suite (environ une minute). Chaque ligne doit afficher <b>OK</b>.</p>
+<h3>Tester un domaine</h3>
+<p>Taper un nom (ex. <span class="mono">stake.com</span>) et <b>Tester</b> : NetWatch dit dans quelle catégorie il le range, et pourquoi.</p>
+<h3>Règles manuelles</h3>
+<p>Elles passent avant les listes. <b>Autoriser</b> = jamais signalé (faux positif, site d'un fournisseur).
+Une catégorie, par exemple <b>Bloqué manuellement</b> = ce site est traité comme cette catégorie. Une règle couvre
+aussi tous les sous-domaines ; <b>Retirer</b> l'annule.</p>
+<h3>Mots-clés suspects</h3>
+<p>Filet de sécurité pour les sites trop récents pour être dans les listes : si le nom contient un de ces mots (ex.
+« porn »), il est classé « Mot-clé suspect ». Un mot par ligne, 3 lettres minimum.</p>
+</section>
+
+<section id="pc">
+<h2>9. PC de l'entreprise (agents)</h2>
+<figure><img src="/static/manuel/img/pc-agents.png" alt="PC avec agent" loading="lazy"><figcaption>Les PC avec l'agent.</figcaption></figure>
+<p>Sans agent, un PC est déjà dans Appareils avec ses sites. L'agent ajoute :</p>
+<ul>
+<li>le <b>nom de la personne connectée</b> (colonne « Session ouverte ») ;</li>
+<li>la vérification que le PC passe bien par NetWatch (<b>DNS via NetWatch : Oui</b>) ;</li>
+<li>le blocage du DNS chiffré dans Chrome, Edge, Firefox et Windows, pour que personne ne contourne le filtre.</li>
+</ul>
+<h3>Installer</h3>
+<ol>
+<li>Sur le PC, clic droit sur Démarrer › <b>Terminal (admin)</b> ou <b>Windows PowerShell (admin)</b>.</li>
+<li>Sur la page PC (agents), cliquer <b>Copier la commande</b>, la coller dans la fenêtre, Entrée.</li>
+<li>Le message « Agent NetWatch installé » s'affiche. Le PC apparaît dans le tableau en moins d'une minute.</li>
+</ol>
+<p>L'agent envoie un signal à l'ouverture de session puis toutes les 5 minutes. Pour le retirer : même commande
+avec <span class="mono">-Uninstall</span> à la fin.</p>
+<div class="note warn">Si un PC affiche <b>DNS via NetWatch : Non</b>, son DNS a été réglé à la main. Relancer la
+commande en ajoutant <span class="mono">-DnsMode Static</span> à la fin.</div>
+</section>
+
+<section id="telephones">
+<h2>10. Téléphones et tablettes</h2>
+<p>Rien à installer, rien à toucher : un téléphone apparaît dès qu'il est sur le Wi-Fi de l'entreprise.</p>
+<ul>
+<li><b>Adresse privée</b> : les iPhone et Android récents montrent une adresse MAC différente par réseau, mais stable
+sur le vôtre. Nommez l'appareil une fois, l'historique le suit.</li>
+<li><b>Relais privé iCloud</b> : NetWatch le désactive pour votre réseau ; l'iPhone affiche une petite notice et
+continue normalement.</li>
+<li><b>« DNS privé » Android</b> réglé sur un fournisseur : le téléphone perd Internet sur votre Wi-Fi jusqu'à ce que
+son propriétaire remette « Automatique ». C'est voulu.</li>
+<li><b>Ce qui reste invisible</b> : un téléphone sur ses données cellulaires, ou dans un VPN (NetWatch signale seulement
+la connexion au VPN).</li>
+</ul>
+</section>
+
+<section id="reglages">
+<h2>11. Réglages</h2>
+<figure><img src="/static/manuel/img/reglages.png" alt="Réglages" loading="lazy"><figcaption>La page Réglages.</figcaption></figure>
+<ul>
+<li><b>Général</b> : nom du site, durée de conservation du journal (90 jours), délai « en ligne » (10 minutes),
+fréquence de mise à jour des listes (7 jours).</li>
+<li><b>DNS</b> : laisser les serveurs en amont <b>vides</b> (automatique = DC01). Ne changer que sur conseil.</li>
+<li><b>Blocage</b> : la page « Accès bloqué » ne peut pas s'afficher sur SRV-APP (son port 80 est déjà pris) ;
+les sites bloqués donnent une erreur de connexion, c'est normal.</li>
+<li><b>Courriels d'alerte</b> : voir ci-dessous.</li>
+<li><b>État du système</b> : version, requêtes, listes, taille de la base. <b>Journal système</b> : les événements techniques.</li>
+<li><b>Mot de passe administrateur</b> : le changer ici.</li>
+</ul>
+<h3>Recevoir les alertes par courriel (Gmail)</h3>
+<ol>
+<li>Sur <span class="mono">myaccount.google.com</span> › Sécurité, activer la <b>validation en deux étapes</b>, puis créer un
+<b>mot de passe d'application</b> (16 lettres).</li>
+<li>Dans Réglages › Courriels d'alerte : cocher l'envoi, mettre les destinataires, serveur <span class="mono">smtp.gmail.com</span>,
+port 587, votre adresse Gmail comme compte, et le mot de passe d'application.</li>
+<li><b>Enregistrer et envoyer un test</b>. Le courriel de test doit arriver en moins d'une minute.</li>
+</ol>
+<p>Une alerte par appareil et par catégorie toutes les 30 minutes au plus. Le <b>rapport quotidien</b> résume la veille à l'heure choisie.</p>
+</section>
+
+<section id="routine">
+<h2>12. Routine conseillée</h2>
+<table>
+<thead><tr><th>Quand</th><th>Quoi</th><th>Durée</th></tr></thead>
+<tbody>
+<tr><td>Chaque matin</td><td>Tableau de bord : alertes de la veille, nouveaux appareils à nommer.</td><td>2 min</td></tr>
+<tr><td>Chaque semaine</td><td>Listes : toutes les sources « OK ». PC (agents) : tous « Oui ».</td><td>2 min</td></tr>
+<tr><td>Nouvel employé</td><td>Lui faire signer l'avis ; nommer ses appareils à leur arrivée.</td><td>5 min</td></tr>
+<tr><td>Nouveau PC</td><td>Installer l'agent (chapitre 9).</td><td>2 min</td></tr>
+</tbody></table>
+</section>
+
+<section id="que-faire">
+<h2>13. Que faire face à une alerte</h2>
+<ol>
+<li><b>Ouvrir la fiche de l'appareil</b>, onglet <b>Tous les domaines</b>, période « Aujourd'hui ».</li>
+<li><b>Lire le contexte.</b> Plusieurs domaines du même site, beaucoup de requêtes, sur plusieurs minutes : visite
+voulue. Une seule requête isolée au milieu de sites de publicité ou d'actualité : probablement une publicité ou un
+aperçu de lien, pas une visite.</li>
+<li><b>Faux positif ?</b> Un site légitime mal classé : bouton <b>Autoriser</b>.</li>
+<li><b>Qui ?</b> Le propriétaire de l'appareil, ou la « Session ouverte » sur un PC avec agent, et l'heure.</li>
+<li><b>Garder une trace</b> : Journal, filtré sur l'appareil et le jour, <b>Exporter CSV</b>.</li>
+<li><b>Agir selon la politique de l'entreprise</b> : discussion avec la personne, et au besoin passer la catégorie sur
+<b>Bloquer</b>.</li>
+</ol>
+<div class="note warn">Agissez seulement si les employés ont été informés et ont signé l'avis (chapitre 14). Une
+preuve recueillie sans avis préalable peut être contestée.</div>
+</section>
+
+<section id="depannage">
+<h2>14. Dépannage et vie privée</h2>
+<h3>Internet ne marche plus pour personne</h3>
+<ol>
+<li>Ouvrir <span class="mono">http://192.168.1.11:8795/</span>. Si la page ne s'ouvre pas, NetWatch est arrêté : sur SRV-APP,
+PowerShell en administrateur, <span class="mono">Start-ScheduledTask NetWatch</span>.</li>
+<li>En urgence, remettre l'ancien DNS sur DC01 (PowerShell en administrateur), puis <span class="mono">ipconfig /renew</span> sur les PC :</li>
+</ol>
+<pre class="code">Set-DhcpServerv4OptionValue -ScopeId 192.168.1.0 -DnsServer 192.168.1.10</pre>
+<p>Pour revenir à NetWatch ensuite : la même commande avec <span class="mono">192.168.1.11</span>.</p>
+<h3>Autres cas</h3>
+<table>
+<thead><tr><th>Problème</th><th>Solution</th></tr></thead>
+<tbody>
+<tr><td>Un site utile est bloqué</td><td>Listes › Tester le domaine, puis règle <b>Autoriser</b>.</td></tr>
+<tr><td>Un téléphone n'a plus Internet sur le Wi-Fi</td><td>Son « DNS privé » est réglé sur un fournisseur : le remettre sur « Automatique ».</td></tr>
+<tr><td>Un appareil n'apparaît pas</td><td>Il n'a pas encore renouvelé son adresse : <span class="mono">ipconfig /renew</span> sur un PC, Wi-Fi off/on sur un téléphone.</td></tr>
+<tr><td>Une source de liste en « Erreur »</td><td>Relancer <b>Mettre à jour les listes</b> ; si l'erreur persiste, envoyer une photo de la ligne.</td></tr>
+<tr><td>Mot de passe oublié</td><td>Sur SRV-APP, dans <span class="mono">C:\NetWatch\config.json</span>, vider <span class="mono">"password_hash"</span>,
+puis <span class="mono">Stop-ScheduledTask NetWatch</span> et <span class="mono">Start-ScheduledTask NetWatch</span> : l'écran de premier mot de passe revient.</td></tr>
+<tr><td>Mettre à jour NetWatch</td><td>Relancer la commande d'installation : les données et le mot de passe sont conservés. Internet fait une pause de quelques secondes.</td></tr>
+</tbody></table>
+<h3>Vie privée (Québec, Loi 25)</h3>
+<ul>
+<li>Informer les employés <b>avant</b> : afficher et faire signer l'avis fourni (Réglages › Documents).</li>
+<li>NetWatch ne garde que les noms de sites, 90 jours. L'accès au tableau de bord est réservé à la direction.</li>
+<li>Pour les téléphones personnels, un Wi-Fi « invités » séparé du réseau de production est préférable.</li>
+</ul>
+<h3>Mots utiles</h3>
+<table>
+<tbody>
+<tr><td><b>DNS</b></td><td>L'annuaire d'Internet : traduit un nom de site en adresse.</td></tr>
+<tr><td><b>DHCP</b></td><td>Le service (sur DC01) qui donne à chaque appareil son adresse et son serveur DNS.</td></tr>
+<tr><td><b>Domaine</b></td><td>Le nom d'un site : <span class="mono">youtube.com</span>, <span class="mono">www.google.com</span>.</td></tr>
+<tr><td><b>Adresse MAC</b></td><td>L'identifiant matériel d'une carte réseau ou d'un Wi-Fi.</td></tr>
+<tr><td><b>Agent</b></td><td>Le petit programme facultatif des PC de l'entreprise.</td></tr>
+<tr><td><b>DNS chiffré (DoH)</b></td><td>Une façon de contourner un filtre ; NetWatch la bloque.</td></tr>
+</tbody></table>
+</section>

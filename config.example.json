@@ -1,0 +1,37 @@
+{
+  "site_name": "Mon entreprise",
+  "contact": "la direction",
+  "dns": {
+    "bind": "0.0.0.0",
+    "port": 53,
+    "upstreams": [],
+    "upstream_timeout": 2.5,
+    "cache_max": 5000,
+    "log_local": false
+  },
+  "web": { "bind": "0.0.0.0", "port": 8795, "password_hash": "", "session_hours": 12 },
+  "blockpage": { "enabled": true, "port": 80 },
+  "block_ip": "auto",
+  "retention_days": 90,
+  "online_minutes": 10,
+  "alerts": {
+    "email_enabled": false,
+    "to": "",
+    "smtp_host": "smtp.gmail.com",
+    "smtp_port": 587,
+    "smtp_user": "",
+    "smtp_password": "",
+    "cooldown_min": 30,
+    "digest_hour": 7,
+    "digest_enabled": false
+  },
+  "lists": {
+    "auto_update_days": 7,
+    "sources": [
+      { "name": "UT1 Université Toulouse Capitole", "key": "ut1", "type": "ut1", "url": "https://dsi.ut-capitole.fr/blacklists/download/blacklists.tar.gz" },
+      { "name": "StevenBlack porn-only", "key": "sb", "type": "hosts", "url": "https://raw.githubusercontent.com/StevenBlack/hosts/master/alternates/porn-only/hosts", "category": "adult" },
+      { "name": "IEEE OUI (fabricants)", "key": "oui", "type": "oui", "url": "https://standards-oui.ieee.org/oui/oui.csv" }
+    ]
+  },
+  "agent": { "token": "" }
+}

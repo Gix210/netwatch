@@ -1,0 +1,8 @@
+# Settings and secrets (admin password hash, e-mail app password) are created on first run
+config.json
+data/
+data-test/
+# bundled Windows runtime, added to the install package only
+python/
+__pycache__/
+*.log

@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NetWatch</title>
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<div id="login" class="login hidden">
+  <form id="loginForm" class="login-card" autocomplete="off">
+    <div class="brand"><span class="dot"></span> NetWatch <small id="loginSite"></small></div>
+    <h1 id="loginTitle">Connexion</h1>
+    <p id="loginHint" class="muted">Entrez le mot de passe administrateur.</p>
+    <input id="loginPw" type="password" placeholder="Mot de passe" autofocus>
+    <input id="loginPw2" type="password" placeholder="Confirmer le mot de passe" class="hidden">
+    <button class="btn primary" type="submit">Entrer</button>
+    <p id="loginErr" class="error"></p>
+  </form>
+</div>
+
+<div id="shell" class="shell hidden">
+  <nav class="rail">
+    <div class="brand"><span class="dot"></span> NetWatch <small id="railSite"></small></div>
+    <a href="#/" data-view="dashboard">Tableau de bord</a>
+    <a href="#/appareils" data-view="devices">Appareils</a>
+    <a href="#/alertes" data-view="alerts">Alertes</a>
+    <a href="#/journal" data-view="journal">Journal</a>
+    <a href="#/listes" data-view="lists">Listes</a>
+    <a href="#/pc" data-view="agents">PC (agents)</a>
+    <a href="#/reglages" data-view="settings">Réglages</a>
+    <a href="#/manuel" data-view="manual">Manuel</a>
+    <div class="rail-foot">
+      <div id="statusPill" class="pill">…</div>
+      <div id="updatePill" class="pill hidden"></div>
+      <button id="logoutBtn" class="btn ghost small">Déconnexion</button>
+      <div class="muted tiny" id="versionTxt"></div>
+    </div>
+  </nav>
+  <main id="main" class="main"></main>
+</div>
+<div id="toasts" class="toasts"></div>
+<div id="modal" class="modal hidden"><div class="modal-card" id="modalCard"></div></div>
+<script src="/static/app.js"></script>
+</body>
+</html>
